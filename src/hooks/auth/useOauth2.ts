@@ -6,6 +6,10 @@ import { handleOidcAuthFailure } from '@/utils/auth-utils';
 import { Analytics } from '@deriv-com/analytics';
 import { OAuth2Logout, requestOidcAuthentication } from '@deriv-com/auth-client';
 
+
+const APP_ORIGIN = 'https://ddb-ot--josemwa300.replit.app';
+const OAUTH_CALLBACK_URL = `${APP_ORIGIN}/callback`;
+
 /**
  * Provides an object with properties: `oAuthLogout`, `retriggerOAuth2Login`, and `isSingleLoggingIn`.
  *
@@ -59,9 +63,9 @@ export const useOauth2 = ({
         client?.setIsLoggingOut(true);
         try {
             await OAuth2Logout({
-                redirectCallbackUri: `${window.location.origin}/callback`,
+                redirectCallbackUri: OAUTH_CALLBACK_URL,
                 WSLogoutAndRedirect: handleLogout ?? (() => Promise.resolve()),
-                postLogoutRedirectUri: window.location.origin,
+                postLogoutRedirectUri: APP_ORIGIN,
             }).catch(err => {
                 // eslint-disable-next-line no-console
                 console.error(err);
@@ -80,8 +84,8 @@ export const useOauth2 = ({
     const retriggerOAuth2Login = async () => {
         try {
             await requestOidcAuthentication({
-                redirectCallbackUri: `${window.location.origin}/callback`,
-                postLogoutRedirectUri: window.location.origin,
+                redirectCallbackUri: OAUTH_CALLBACK_URL,
+                postLogoutRedirectUri:  APP_ORIGIN,
             }).catch(err => {
                 handleOidcAuthFailure(err);
             });
