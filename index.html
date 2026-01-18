@@ -2,136 +2,174 @@
 <html lang="en" dir="auto">
     <head>
         <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/deriv-logo.svg" />
+        <link rel="icon" type="image/png" href="/makoti-logo.png?v=1.2" />
+        <link rel="apple-touch-icon" href="/makoti-logo.png?v=1.2" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
-        <!-- PWA Manifest -->
-        <link rel="manifest" href="/manifest.json" />
-
-        <!-- PWA Meta Tags -->
-        <meta name="theme-color" content="#ff444f" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Deriv Bot" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#ff444f" />
-        <meta name="msapplication-tap-highlight" content="no" />
-
-        <!-- Apple Touch Icons -->
-        <link rel="apple-touch-icon" href="/assets/icons/pwa/icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/pwa/icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/pwa/icon-192x192.png" />
-        <meta name="title" content="Build a trading bot without coding | Deriv Bot." />
-        <meta
-            name="description"
-            content="Import your current bot or learn how to create a trading bot from scratch with our detailed guides, FAQs, and tutorials. Start with a quick strategy!"
-        />
-        <meta property="og:title" content="Deriv Bot" />
-        <meta
-            property="og:description"
-            content="Import your current bot or learn how to create a trading bot from scratch with our detailed guides, FAQs, and tutorials. Start with a quick strategy!"
-        />
-        <title>Build a trading bot without coding | Deriv Bot.</title>
+        <title>MAKOTI TRADERS</title>
+        
         <style>
-            :root {
-                font-size: 62.5%;
+            :root { font-size: 62.5%; }
+
+            /* 1. WELCOME SCREEN (SPLASH) STYLING */
+            #welcome-screen {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000000;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 100000; /* Highest priority */
+                transition: opacity 0.8s ease, visibility 0.8s;
+            }
+
+            #welcome-screen.fade-out {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            .welcome-logo {
+                width: 130px;
+                height: auto;
+                margin-bottom: 25px;
+                animation: pulseLogo 2s infinite ease-in-out;
+            }
+
+            .welcome-text {
+                color: #00d9ff;
+                font-family: Arial, sans-serif;
+                font-size: 2.6rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 4px;
+                margin-bottom: 35px;
+            }
+
+            /* Loading Circle */
+            .loader {
+                width: 50px;
+                height: 50px;
+                border: 3px solid #1a1a1a;
+                border-radius: 50%;
+                display: inline-block;
+                position: relative;
+                animation: rotation 1s linear infinite;
+            }
+            .loader::after {
+                content: '';  
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                border: 3px solid transparent;
+                border-bottom-color: #00d9ff;
+            }
+
+            @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+            /* 2. MAIN SITE THEME */
+            .blocklyMainBackground, .injectionDiv, .body.theme--light {
+                background-color: #000000 !important;
+                fill: #000000 !important;
+            }
+
+            #makoti-header {
+                width: 100%;
+                background: #000000;
+                padding: 12px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-bottom: 2px solid #00d9ff;
+                position: relative;
+                z-index: 9999;
+            }
+
+            #makoti-header h1 {
+                color: #00d9ff;
+                font-family: Arial, sans-serif;
+                font-size: 2.2rem;
+                margin: 0;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            /* LABEL COLOR FIX */
+            .blocklyText { fill: #000000 !important; }
+
+            /* SURGICAL COLORS */
+            .makoti-loss, .loss { fill: #ff444f !important; color: #ff444f !important; }
+            .makoti-profit, .profit { fill: #00ff41 !important; color: #00ff41 !important; }
+
+            .makoti-stop-btn {
+                background-color: #ff444f !important;
+                box-shadow: 0 0 15px #ff444f !important;
+                color: white !important;
+            }
+
+            .blocklyEditableText > .blocklyFieldRect {
+                fill: #1a1a1a !important;
+                stroke: #00d9ff !important;
             }
         </style>
     </head>
 
     <body class="body theme theme--light">
-        <div id="modal_root" class="modal-root"></div>
-        <div id="popup_root" class="popup-root"></div>
+        
+        <div id="welcome-screen">
+            <img src="/makoti-logo.png?v=1.2" alt="Logo" class="welcome-logo">
+            <div class="welcome-text">Makoti Traders</div>
+            <span class="loader"></span>
+        </div>
+
+        <div id="makoti-header">
+            <img src="/makoti-logo.png?v=1.2" alt="Logo" style="height:35px; margin-right:15px;">
+            <h1>Makoti</h1>
+        </div>
+
         <div id="root"></div>
-        <!-- LiveChat script -->
-        <script type="text/javascript" defer>
-            window.__lc = window.__lc || {};
-            window.__lc.license = 12049137;
-            window.__lc.asyncInit = true;
-            (function (n, t, c) {
-                function i(n) {
-                    return e._h ? e._h.apply(null, n) : e._q.push(n);
-                }
-                var e = {
-                    _q: [],
-                    _h: null,
-                    _v: '2.0',
-                    on: function () {
-                        i(['on', c.call(arguments)]);
-                    },
-                    once: function () {
-                        i(['once', c.call(arguments)]);
-                    },
-                    off: function () {
-                        i(['off', c.call(arguments)]);
-                    },
-                    get: function () {
-                        if (!e._h) throw new Error('[LiveChatWidget] You can’t use getters before load.');
-                        return i(['get', c.call(arguments)]);
-                    },
-                    call: function () {
-                        i(['call', c.call(arguments)]);
-                    },
-                    init: function () {
-                        setTimeout(() => {
-                            var n = t.createElement('script');
-                            ((n.async = !0),
-                                (n.type = 'text/javascript'),
-                                (n.src = 'https://cdn.livechatinc.com/tracking.js'),
-                                t.head.appendChild(n));
-                        }, 3000);
-                    },
-                };
-                (!n.__lc.asyncInit && e.init(), (n.LiveChatWidget = n.LiveChatWidget || e));
-            })(window, document, [].slice);
-        </script>
-        <!-- End LiveChat script -->
-
-        <!-- Browser Service Worker Prevention -->
+        
         <script>
-            // Check browser compatibility and prevent service worker issues
-            const userAgent = navigator.userAgent.toLowerCase();
-            const isFirefox = userAgent.includes('firefox');
-            const isSafari = userAgent.includes('safari') && !userAgent.includes('chrome');
-            const shouldSkipSW = isFirefox || isSafari;
-
-            if (shouldSkipSW) {
-                const browserName = isFirefox ? 'Firefox' : 'Safari';
-                console.log(
-                    `[HTML] ${browserName} detected - preventing service worker registration to avoid chunk loading issues`
-                );
-
-                // Cleanup any existing service workers
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker
-                        .getRegistrations()
-                        .then(registrations => {
-                            registrations.forEach(registration => {
-                                console.log(`[HTML] Unregistering existing SW for ${browserName}:`, registration.scope);
-                                registration.unregister();
-                            });
-                        })
-                        .catch(error => {
-                            console.error('[HTML] Failed to cleanup service workers:', error);
-                        });
-                }
-            }
-
-            // Check online/offline status
-            console.log('[HTML] Online status:', navigator.onLine);
-            window.addEventListener('online', () => {
-                console.log('[HTML] Back online');
-            });
-            window.addEventListener('offline', () => {
-                console.log('[HTML] Gone offline');
+            // Handle Welcome Screen removal
+            window.addEventListener('load', () => {
+                const splash = document.getElementById('welcome-screen');
+                setTimeout(() => {
+                    splash.classList.add('fade-out');
+                }, 2500); // Shows for 2.5 seconds
             });
 
-            // Listen for service worker messages if registered by PWA utils (non-problematic browsers only)
-            if ('serviceWorker' in navigator && !shouldSkipSW) {
-                navigator.serviceWorker.addEventListener('message', event => {
-                    console.log('[HTML] Message from service worker:', event.data);
+            const makotiEngine = new MutationObserver(() => {
+                // Button coloring
+                document.querySelectorAll('button').forEach(btn => {
+                    if (btn.textContent.toLowerCase().includes('stop')) {
+                        btn.classList.add('makoti-stop-btn');
+                    }
                 });
-            }
+
+                // Text coloring logic
+                const allNumbers = document.querySelectorAll('.blocklyText, .dc-stat__value, span, div');
+                allNumbers.forEach(el => {
+                    const val = el.textContent.trim();
+                    if (val.includes('-')) {
+                        el.style.setProperty('fill', '#ff444f', 'important');
+                        el.style.setProperty('color', '#ff444f', 'important');
+                    } else if ((val.includes('$') || val.includes('+')) && !val.includes(':')) {
+                        el.style.setProperty('fill', '#00ff41', 'important');
+                        el.style.setProperty('color', '#00ff41', 'important');
+                    } else if (el.classList.contains('blocklyText') && !el.closest('.blocklyEditableText')) {
+                        el.style.setProperty('fill', '#000000', 'important');
+                    }
+                });
+            });
+
+            makotiEngine.observe(document.body, { childList: true, subtree: true, characterData: true });
         </script>
     </body>
 </html>
