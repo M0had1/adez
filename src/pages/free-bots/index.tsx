@@ -16,6 +16,14 @@ interface Bot {
 const BOTS: Bot[] = [
     {
         id: '1',
+        name: 'Poverty Killer Bot',
+        description: 'High-performance bot designed for aggressive market recovery and consistent profit extraction.',
+        fileName: 'poverty_killer.xml',
+        category: 'Speed Trading',
+        icon: '💰',
+    },
+    {
+        id: '2',
         name: 'Expert Speed Bot',
         description: 'Advanced speed trading bot with optimized entry and exit points for quick trades.',
         fileName: '2_2025_Updated_Expert_Speed_Bot_Version_📉📉📉📈📈📈_1_1_1765711647656.xml',
@@ -23,7 +31,7 @@ const BOTS: Bot[] = [
         icon: '⚡',
     },
     {
-        id: '2',
+        id: '3',
         name: 'Candle Mine Bot',
         description: 'Analyzes candlestick patterns to identify profitable trading opportunities.',
         fileName: '3_2025_Updated_Version_Of_Candle_Mine🇬🇧_1765711647657.xml',
@@ -31,7 +39,7 @@ const BOTS: Bot[] = [
         icon: '🕯️',
     },
     {
-        id: '3',
+        id: '4',
         name: 'Accumulators Pro Bot',
         description: 'Professional accumulator strategy bot for consistent growth trading.',
         fileName: 'Accumulators_Pro_Bot_1765711647657.xml',
@@ -39,7 +47,7 @@ const BOTS: Bot[] = [
         icon: '📈',
     },
     {
-        id: '4',
+        id: '5',
         name: 'AI Entry Point Bot',
         description: 'AI-powered bot that identifies optimal entry points for maximum profit.',
         fileName: 'AI_with_Entry_Point_1765711647658.xml',
@@ -47,7 +55,7 @@ const BOTS: Bot[] = [
         icon: '🤖',
     },
     {
-        id: '5',
+        id: '6',
         name: 'Alex Speed Bot EXPRO2',
         description: 'Enhanced speed trading bot with advanced algorithms for rapid execution.',
         fileName: 'ALEXSPEEDBOT__EXPRO2_(2)_(1)_1765711647659.xml',
@@ -55,7 +63,7 @@ const BOTS: Bot[] = [
         icon: '🚀',
     },
     {
-        id: '6',
+        id: '7',
         name: 'Alpha AI Two Predictions',
         description: 'Dual prediction AI system for higher accuracy in market forecasting.',
         fileName: 'Alpha_Ai_Two_Predictions__1765711647659.xml',
@@ -63,7 +71,7 @@ const BOTS: Bot[] = [
         icon: '🎯',
     },
     {
-        id: '7',
+        id: '8',
         name: 'Auto C4 Volt Premium',
         description: 'Premium automated trading bot with advanced market analysis features.',
         fileName: 'AUTO_C4_VOLT_🇬🇧_2_🇬🇧_AI_PREMIUM_ROBOT_(2)_(1)_1765711647660.xml',
@@ -71,7 +79,7 @@ const BOTS: Bot[] = [
         icon: '⚡',
     },
     {
-        id: '8',
+        id: '9',
         name: 'Binary Flipper AI Plus',
         description: 'AI-enhanced binary options trading bot with flip strategy optimization.',
         fileName: 'BINARY_FLIPPER_AI_ROBOT_PLUS_+_1765711647660.xml',
@@ -79,7 +87,7 @@ const BOTS: Bot[] = [
         icon: '🔄',
     },
     {
-        id: '9',
+        id: '10',
         name: 'Binarytool Wizard AI',
         description: 'Intelligent trading wizard with multiple strategy implementations.',
         fileName: 'BINARYTOOL_WIZARD_AI_BOT_1765711647661.xml',
@@ -87,7 +95,7 @@ const BOTS: Bot[] = [
         icon: '🧙',
     },
     {
-        id: '10',
+        id: '11',
         name: 'Binarytool Differ V2.0',
         description: 'Version 2.0 differ bot with improved accuracy and performance.',
         fileName: 'BINARYTOOL@_DIFFER_V2.0_(1)_(1)_1765711647662.xml',
@@ -95,7 +103,7 @@ const BOTS: Bot[] = [
         icon: '📊',
     },
     {
-        id: '11',
+        id: '12',
         name: 'Even Odd Thunder AI Pro',
         description: 'Professional even/odd prediction bot with thunder-fast execution.',
         fileName: 'BINARYTOOL@EVEN_ODD_THUNDER_AI_PRO_BOT_1765711647662.xml',
@@ -103,13 +111,21 @@ const BOTS: Bot[] = [
         icon: '⚡',
     },
     {
-        id: '12',
+        id: '13',
         name: 'Even & Odd AI Bot',
         description: 'Smart AI bot specialized in even and odd digit predictions.',
         fileName: 'BINARYTOOL@EVEN&ODD_AI_BOT_(2)_1765711647663.xml',
         category: 'Even/Odd',
         icon: '🎲',
     },
+    {
+        id: '14',
+        name: 'MAKOTI ADVANCED',
+        description: 'A bot that uses a martingale strategy with recovery mode.',
+        fileName: 'makoti_advanced.xml',
+        category: 'Speed Trading',
+        icon: '⚡️',
+    }
 ];
 
 const FreeBots = observer(() => {
