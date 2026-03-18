@@ -2,12 +2,12 @@ import { LocalStorageConstants, LocalStorageUtils, URLUtils } from '@deriv-com/u
 import { isStaging } from '../url/helpers';
 
 export const APP_IDS = {
-    LOCALHOST: 36300,
+    LOCALHOST: '32JY4kmYCS8cmXM9Kk4m5',
     TMP_STAGING: 64584,
     STAGING: 29934,
     STAGING_BE: 29934,
     STAGING_ME: 29934,
-    PRODUCTION: 65555,
+    PRODUCTION: '32JY4kmYCS8cmXM9Kk4m5',
     PRODUCTION_BE: 65556,
     PRODUCTION_ME: 65557,
 };
