@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { generateDerivApiInstance } from '@/external/bot-skeleton/services/api/appId';
+import { api_base } from '@/external/bot-skeleton';
 import Button from '@/components/shared_ui/button';
 import { LegacyClose1pxIcon } from '@deriv/quill-icons/Legacy';
 import { Localize } from '@deriv-com/translations';
@@ -27,12 +27,16 @@ const ApiTokenModal = ({ is_visible, onClose }: TApiTokenModalProps) => {
         setError('');
 
         try {
-            const api = generateDerivApiInstance();
-            const { authorize, error: api_error } = await api.authorize(token.trim());
-            api.disconnect();
+            if (!api_base.api) {
+                setError('Connection not ready. Please wait a moment and try again.');
+                setIsLoading(false);
+                return;
+            }
+
+            const { authorize, error: api_error } = await api_base.api.authorize(token.trim());
 
             if (api_error) {
-                setError(api_error.message || 'Invalid token. Please check and try again.');
+                setError((api_error as { message?: string }).message || 'Invalid token. Please check and try again.');
                 setIsLoading(false);
                 return;
             }
@@ -59,7 +63,8 @@ const ApiTokenModal = ({ is_visible, onClose }: TApiTokenModalProps) => {
             localStorage.setItem('active_loginid', authorize.loginid);
             localStorage.setItem('client.country', authorize.country ?? '');
 
-            window.location.reload();
+            onClose();
+            await api_base.authorizeAndSubscribe();
         } catch (err) {
             setError('Unable to connect. Please check your token and try again.');
             setIsLoading(false);
