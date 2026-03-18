@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import PWAInstallButton from '@/components/pwa-install-button';
@@ -19,6 +19,7 @@ import { Tooltip } from '@deriv-com/ui';
 import { AppLogo } from '../app-logo';
 import AccountsInfoLoader from './account-info-loader';
 import AccountSwitcher from './account-switcher';
+import ApiTokenModal from './api-token-modal/api-token-modal';
 import MenuItems from './menu-items';
 import MobileMenu from './mobile-menu';
 import PlatformSwitcher from './platform-switcher';
@@ -32,6 +33,7 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
     const { isDesktop } = useDevice();
     const { isAuthorizing, activeLoginid } = useApiBase();
     const { client } = useStore() ?? {};
+    const [isApiTokenModalOpen, setIsApiTokenModalOpen] = useState(false);
 
     const { data: activeAccount } = useActiveAccount({ allBalanceData: client?.all_accounts_balance });
     const { accounts, getCurrency, is_virtual } = client ?? {};
@@ -134,57 +136,69 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
             );
         } else {
             return (
-                <div className='auth-actions'>
-                    <Button
-                        tertiary
-                        onClick={async () => {
-                            clearAuthData(false);
-                            const getQueryParams = new URLSearchParams(window.location.search);
-                            const currency = getQueryParams.get('account') ?? '';
-                            const query_param_currency =
-                                currency || sessionStorage.getItem('query_param_currency') || 'USD';
+                <>
+                    <div className='auth-actions'>
+                        <Button
+                            tertiary
+                            onClick={async () => {
+                                clearAuthData(false);
+                                const getQueryParams = new URLSearchParams(window.location.search);
+                                const currency = getQueryParams.get('account') ?? '';
+                                const query_param_currency =
+                                    currency || sessionStorage.getItem('query_param_currency') || 'USD';
 
-                            try {
-                                // First, explicitly wait for TMB status to be determined
-                                const tmbEnabled = await isTmbEnabled();
-                                // Now use the result of the explicit check
-                                if (tmbEnabled) {
-                                    await onRenderTMBCheck(true); // Pass true to indicate it's from login button
-                                } else {
-                                    // Always use OIDC if TMB is not enabled
-                                    try {
-                                        await requestOidcAuthentication({
-                                            redirectCallbackUri: `${window.location.origin}/callback`,
-                                            ...(query_param_currency
-                                                ? {
-                                                      state: {
-                                                          account: query_param_currency,
-                                                      },
-                                                  }
-                                                : {}),
-                                        });
-                                    } catch (err) {
-                                        handleOidcAuthFailure(err);
-                                        window.location.replace(generateOAuthURL());
+                                try {
+                                    // First, explicitly wait for TMB status to be determined
+                                    const tmbEnabled = await isTmbEnabled();
+                                    // Now use the result of the explicit check
+                                    if (tmbEnabled) {
+                                        await onRenderTMBCheck(true); // Pass true to indicate it's from login button
+                                    } else {
+                                        // Always use OIDC if TMB is not enabled
+                                        try {
+                                            await requestOidcAuthentication({
+                                                redirectCallbackUri: `${window.location.origin}/callback`,
+                                                ...(query_param_currency
+                                                    ? {
+                                                          state: {
+                                                              account: query_param_currency,
+                                                          },
+                                                      }
+                                                    : {}),
+                                            });
+                                        } catch (err) {
+                                            handleOidcAuthFailure(err);
+                                            window.location.replace(generateOAuthURL());
+                                        }
                                     }
+                                } catch (error) {
+                                    // eslint-disable-next-line no-console
+                                    console.error(error);
                                 }
-                            } catch (error) {
-                                // eslint-disable-next-line no-console
-                                console.error(error);
-                            }
-                        }}
-                    >
-                        <Localize i18n_default_text='Log in' />
-                    </Button>
-                    <Button
-                        primary
-                        onClick={() => {
-                            window.open(standalone_routes.signup);
-                        }}
-                    >
-                        <Localize i18n_default_text='Sign up' />
-                    </Button>
-                </div>
+                            }}
+                        >
+                            <Localize i18n_default_text='Log in' />
+                        </Button>
+                        <Button
+                            secondary
+                            onClick={() => setIsApiTokenModalOpen(true)}
+                        >
+                            <Localize i18n_default_text='API token' />
+                        </Button>
+                        <Button
+                            primary
+                            onClick={() => {
+                                window.open(standalone_routes.signup);
+                            }}
+                        >
+                            <Localize i18n_default_text='Sign up' />
+                        </Button>
+                    </div>
+                    <ApiTokenModal
+                        is_visible={isApiTokenModalOpen}
+                        onClose={() => setIsApiTokenModalOpen(false)}
+                    />
+                </>
             );
         }
     }, [
