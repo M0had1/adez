@@ -5,6 +5,7 @@ import { useTranslations } from '@deriv-com/translations';
 import AITraderStore from '@/stores/ai-trader-store';
 import { VolatilitySelector } from './volatility-selector';
 import { TradeTypeSelector } from './trade-type-selector';
+import { AlternationSettings } from './alternation-settings';
 import { IComponentProps } from '../types/ai-trader.types';
 import './settings-panel.scss';
 
@@ -115,6 +116,11 @@ export const SettingsPanel = observer(
                                 aria-label='timeout-between-trades'
                             />
                         </div>
+                    </div>
+
+                    {/* Alternation Settings */}
+                    <div className='settings-panel__section'>
+                        <AlternationSettings store={store} />
                     </div>
 
                     {/* Action Buttons */}

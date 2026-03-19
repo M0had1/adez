@@ -6,6 +6,10 @@ export type TTradeType = 'Rise/Fall' | 'Higher/Lower' | 'Odd/Even' | 'Match/Diff
 
 export type TPredictionType = 'random' | 'last_tick' | 'trend_analysis';
 
+export type TAlternationMode = 'none' | 'every_trade' | 'on_loss' | 'on_win' | 'on_recovery' | 'consecutive_losses';
+
+export type TDirection = 'primary' | 'secondary';
+
 export interface IAITraderSettings {
     is_enabled: boolean;
     volatility_index: TVolatilityIndex;
@@ -30,6 +34,12 @@ export interface IMartingaleSettings {
     multiplier: number;
     max_increase: number; // max number of consecutive increases
     reset_after_win: boolean;
+}
+
+export interface IAlternationSettings {
+    is_enabled: boolean;
+    mode: TAlternationMode;
+    consecutive_losses_threshold: number; // for 'consecutive_losses' mode
 }
 
 export interface ITradeRecord {
@@ -87,8 +97,18 @@ export default class AITraderStore {
         reset_after_win: true,
     };
 
+    // Alternation
+    alternation: IAlternationSettings = {
+        is_enabled: false,
+        mode: 'none',
+        consecutive_losses_threshold: 2,
+    };
+
     // Trading State
     is_trading = false;
+    current_direction: TDirection = 'primary';
+    last_trade_was_win: boolean | null = null;
+    consecutive_losses_counter: number = 0;
     is_waiting_for_trade = false;
     current_tick: number | null = null;
     last_tick_direction: 'up' | 'down' | null = null;
@@ -121,6 +141,7 @@ export default class AITraderStore {
             settings: observable,
             risk_management: observable,
             martingale: observable,
+            alternation: observable,
             is_trading: observable,
             is_waiting_for_trade: observable,
             current_tick: observable,
@@ -133,9 +154,13 @@ export default class AITraderStore {
             performance_metrics: observable,
             error_message: observable,
             has_error: observable,
+            current_direction: observable,
+            last_trade_was_win: observable,
+            consecutive_losses_counter: observable,
             updateSettings: action,
             updateRiskManagement: action,
             updateMartingaleSettings: action,
+            updateAlternationSettings: action,
             startTrading: action,
             stopTrading: action,
             setCurrentTick: action,
@@ -146,6 +171,8 @@ export default class AITraderStore {
             clearError: action,
             resetSession: action,
             updateMartingaleLevel: action,
+            getNextDirection: action,
+            shouldAlternate: action,
         });
     }
 
@@ -162,6 +189,10 @@ export default class AITraderStore {
         this.martingale = { ...this.martingale, [key]: value };
     }
 
+    updateAlternationSettings(key: keyof IAlternationSettings, value: any) {
+        this.alternation = { ...this.alternation, [key]: value };
+    }
+
     // Trading actions
     startTrading(initialBalance: number) {
         if (!this.validateSettings()) return;
@@ -170,6 +201,9 @@ export default class AITraderStore {
         this.is_waiting_for_trade = true;
         this.session_start_balance = initialBalance;
         this.session_start_time = Date.now();
+        this.current_direction = 'primary';
+        this.last_trade_was_win = null;
+        this.consecutive_losses_counter = 0;
         this.performance_metrics = {
             total_trades: 0,
             total_wins: 0,
@@ -208,8 +242,20 @@ export default class AITraderStore {
 
     recordTrade(trade: ITradeRecord) {
         this.trade_history.push(trade);
+        this.last_trade_was_win = trade.is_win;
+
+        // Track consecutive losses for alternation
+        if (!trade.is_win) {
+            this.consecutive_losses_counter += 1;
+        } else {
+            this.consecutive_losses_counter = 0;
+        }
+
         this.updatePerformanceMetrics(trade);
         this.is_waiting_for_trade = true;
+
+        // Check if we need to alternate direction
+        this.getNextDirection();
 
         // Reset martingale if win and reset_after_win is enabled
         if (trade.is_win && this.martingale.reset_after_win) {
@@ -289,7 +335,61 @@ export default class AITraderStore {
         this.active_trade = null;
         this.current_tick = null;
         this.last_tick_direction = null;
+        this.current_direction = 'primary';
+        this.last_trade_was_win = null;
+        this.consecutive_losses_counter = 0;
         this.clearError();
+    }
+
+    // Alternation Logic
+    shouldAlternate(): boolean {
+        if (!this.alternation.is_enabled || this.alternation.mode === 'none') {
+            return false;
+        }
+
+        const metrics = this.performance_metrics;
+        const streak = metrics.current_streak;
+
+        switch (this.alternation.mode) {
+            case 'every_trade':
+                return metrics.total_trades > 0; // Alternate after every trade
+
+            case 'on_loss':
+                return this.last_trade_was_win === false; // Alternate after a loss
+
+            case 'on_win':
+                return this.last_trade_was_win === true; // Alternate after a win
+
+            case 'on_recovery':
+                // Alternate when going from losses to wins
+                return (
+                    this.last_trade_was_win === true &&
+                    streak > 0 &&
+                    Math.abs(streak) === 1 // Just started winning
+                );
+
+            case 'consecutive_losses':
+                // Alternate after reaching threshold of consecutive losses
+                return (
+                    this.last_trade_was_win === false &&
+                    Math.abs(streak) >= this.alternation.consecutive_losses_threshold
+                );
+
+            default:
+                return false;
+        }
+    }
+
+    getNextDirection(): TDirection {
+        if (!this.alternation.is_enabled || this.alternation.mode === 'none') {
+            return this.current_direction;
+        }
+
+        if (this.shouldAlternate()) {
+            this.current_direction = this.current_direction === 'primary' ? 'secondary' : 'primary';
+        }
+
+        return this.current_direction;
     }
 
     // Validation

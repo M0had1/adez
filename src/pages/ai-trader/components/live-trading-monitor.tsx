@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { Text, Button } from '@deriv-com/ui';
 import { useTranslations } from '@deriv-com/translations';
 import AITraderStore from '@/stores/ai-trader-store';
+import { getDirectionLabel } from '../utils/direction-helper';
 import { IComponentProps } from '../types/ai-trader.types';
 import './live-trading-monitor.scss';
 
@@ -49,24 +50,47 @@ export const LiveTradingMonitor = observer(({ store, className }: ILiveTradingMo
                     </div>
                 </div>
 
-                {/* Current Ticker */}
-                {store.current_tick !== null && (
-                    <div className='live-trading-monitor__section'>
-                        <Text size='xs' color='subtle'>
-                            {localize('Current Tick')}
-                        </Text>
-                        <div className='live-trading-monitor__ticker'>
-                            <Text as='h3' weight='bold' size='lg'>
-                                {store.current_tick.toFixed(2)}
-                            </Text>
-                            {store.last_tick_direction && (
-                                <Text size='sm' className={`live-trading-monitor__direction live-trading-monitor__direction--${store.last_tick_direction}`}>
-                                    {store.last_tick_direction === 'up' ? '↑' : '↓'}
+                {/* Current Ticker & Direction */}
+                <div className='live-trading-monitor__section'>
+                    {store.current_tick !== null && (
+                        <div className='live-trading-monitor__ticker-container'>
+                            <div>
+                                <Text size='xs' color='subtle'>
+                                    {localize('Current Tick')}
                                 </Text>
-                            )}
+                                <div className='live-trading-monitor__ticker'>
+                                    <Text as='h3' weight='bold' size='lg'>
+                                        {store.current_tick.toFixed(2)}
+                                    </Text>
+                                    {store.last_tick_direction && (
+                                        <Text size='sm' className={`live-trading-monitor__direction live-trading-monitor__direction--${store.last_tick_direction}`}>
+                                            {store.last_tick_direction === 'up' ? '↑' : '↓'}
+                                        </Text>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+
+                    {/* Trading Direction */}
+                    {store.is_trading && (
+                        <div className='live-trading-monitor__trading-direction'>
+                            <Text size='xs' color='subtle'>
+                                {localize('Trading Direction')}
+                            </Text>
+                            <div className='live-trading-monitor__direction-badge'>
+                                <Text weight='bold' size='sm'>
+                                    {getDirectionLabel(store.settings.trade_type, store.current_direction)}
+                                </Text>
+                                {store.alternation.is_enabled && (
+                                    <Text size='xs' color='info' className='live-trading-monitor__alternation-indicator'>
+                                        {localize('(Alternating)')}
+                                    </Text>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 {/* Active Trade Info */}
                 {store.active_trade && (

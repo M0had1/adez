@@ -55,6 +55,12 @@
         animation: pulse 2s infinite;
     }
 
+    &__ticker-container {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
     &__ticker {
         display: flex;
         align-items: center;
@@ -63,6 +69,27 @@
         background: var(--color-background, #f5f5f5);
         border-radius: 0.5rem;
         margin-top: 0.5rem;
+    }
+
+    &__trading-direction {
+        flex: 1;
+    }
+
+    &__direction-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+        color: #3b82f6;
+    }
+
+    &__alternation-indicator {
+        margin-left: auto;
+        opacity: 0.8;
     }
 
     &__direction {
