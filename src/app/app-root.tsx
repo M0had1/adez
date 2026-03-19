@@ -46,14 +46,17 @@ const AppRoot = () => {
     useEffect(() => {
         const checkTmbStatus = async () => {
             try {
-                const tmb_status = await isTmbEnabled();
+                const timeout_promise = new Promise<boolean>((_, reject) =>
+                    setTimeout(() => reject(new Error('TMB check timed out')), 3000)
+                );
+                const tmb_status = await Promise.race([isTmbEnabled(), timeout_promise]);
                 const final_status = tmb_status || window.is_tmb_enabled === true;
 
                 setIsTmbEnabled(final_status);
 
                 setIsTmbCheckComplete(true);
             } catch (error) {
-                console.error('TMB check failed:', error);
+                console.error('TMB check failed or timed out:', error);
                 setIsTmbCheckComplete(true);
             }
         };
