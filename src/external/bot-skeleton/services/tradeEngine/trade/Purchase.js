@@ -114,6 +114,58 @@ export default Engine =>
                 delayIndex++
             ).then(onSuccess);
         }
+        async dualPurchase(contract_type1, contract_type2) {
+            if (this.store.getState().scope !== BEFORE_PURCHASE) {
+                return Promise.resolve();
+            }
+
+            const proposal1 = this.selectProposal(contract_type1);
+            const proposal2 = this.selectProposal(contract_type2);
+
+            this.isSold = false;
+
+            contractStatus({
+                id: 'contract.purchase_sent',
+                data: proposal1.askPrice,
+            });
+
+            const action1 = () => api_base.api.send({ buy: proposal1.id, price: proposal1.askPrice });
+            const action2 = () => api_base.api.send({ buy: proposal2.id, price: proposal2.askPrice });
+
+            const onSuccess = results => {
+                results.forEach(response => {
+                    const { buy } = response;
+                    contractStatus({
+                        id: 'contract.purchase_received',
+                        data: buy.transaction_id,
+                        buy,
+                    });
+                    log(LogTypes.PURCHASE, { longcode: buy.longcode, transaction_id: buy.transaction_id });
+                });
+
+                const primary = results[0].buy;
+                this.contractId = primary.contract_id;
+                this.store.dispatch(purchaseSuccessful());
+
+                if (this.is_proposal_subscription_required) {
+                    this.renewProposalsOnPurchase();
+                }
+
+                delayIndex = 0;
+
+                info({
+                    accountID: this.accountInfo.loginid,
+                    totalRuns: this.updateAndReturnTotalRuns(),
+                    transaction_ids: {
+                        buy: results.map(r => r.buy.transaction_id).join(', '),
+                    },
+                    contract_type: `${contract_type1}+${contract_type2}`,
+                    buy_price: results.reduce((sum, r) => sum + r.buy.buy_price, 0),
+                });
+            };
+
+            return Promise.all([doUntilDone(action1), doUntilDone(action2)]).then(onSuccess);
+        }
         getPurchaseReference = () => purchase_reference;
         regeneratePurchaseReference = () => {
             purchase_reference = getUUID();
