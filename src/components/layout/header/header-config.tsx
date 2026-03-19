@@ -6,6 +6,7 @@ import {
     LegacyDerivIcon as RobotLogo,
     LegacyHomeNewIcon as TradershubLogo,
     LegacyReportsIcon as ReportsLogo,
+    LegacyRobotIcon as AIBotLogo,
 } from '@deriv/quill-icons/Legacy';
 import {
     DerivProductBrandLightDerivBotLogoWordmarkIcon as DerivBotLogo,
@@ -94,6 +95,12 @@ export const MenuItems: MenuItemsConfig[] = [
         href: standalone_routes.free_bots,
         icon: <RobotLogo iconSize='xs' />,
         label: localize('Free Bots'),
+    },
+    {
+        as: 'a',
+        href: standalone_routes.ai_trader,
+        icon: <AIBotLogo iconSize='xs' />,
+        label: localize('AI Trading'),
     },
     {
         as: 'a',
