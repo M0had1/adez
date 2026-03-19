@@ -1,0 +1,67 @@
+.ai-trader-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    background: var(--color-background, #ffffff);
+
+    &__container {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    &__sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+    }
+
+    &__panels {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    &__main {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+        &__container {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        &__sidebar {
+            position: static;
+            height: auto;
+        }
+
+        &__panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        padding: 1rem 0.5rem;
+
+        &__container {
+            gap: 1rem;
+        }
+
+        &__panels {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+}

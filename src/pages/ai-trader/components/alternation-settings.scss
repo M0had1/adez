@@ -1,0 +1,110 @@
+.alternation-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 1.6rem;
+    background: var(--general-section-1);
+    border-radius: 0.8rem;
+    border: 1px solid var(--general-disabled-1);
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        align-items: flex-start;
+    }
+
+    &__title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-general);
+        margin: 0;
+        padding: 0;
+    }
+
+    &__checkbox {
+        width: 100%;
+    }
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    &__label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-general);
+        display: block;
+    }
+
+    &__description {
+        font-size: 1.1rem;
+        color: var(--text-disabled);
+        margin: 0;
+        padding: 0;
+        line-height: 1.4;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.2rem;
+        background: var(--general-section-2);
+        border-radius: 0.4rem;
+        border-left: 3px solid var(--status-info);
+    }
+
+    &__info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &__info-label {
+        font-size: 1.1rem;
+        color: var(--text-disabled);
+        font-weight: 500;
+    }
+
+    &__info-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-general);
+        padding: 0.4rem 0.8rem;
+        background: var(--general-section-1);
+        border-radius: 0.4rem;
+        min-width: 6rem;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        padding: 1.2rem;
+        gap: 1.2rem;
+
+        &__title {
+            font-size: 1.2rem;
+        }
+
+        &__label {
+            font-size: 1.1rem;
+        }
+
+        &__description {
+            font-size: 1rem;
+        }
+
+        &__info {
+            padding: 1rem;
+        }
+
+        &__info-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+    }
+}
